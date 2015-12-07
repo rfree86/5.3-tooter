@@ -4,10 +4,12 @@ var views = require('views');
 $(document).ready(function() {
   $('body').prepend(JST.application());
 
+  // Form interaction
   $('.js-create-post-form').on('submit', function(event) {
-event.preventDefault();
-    $(document).trigger("create:post", [{title: "Cool", body: "Cool"}]);
-
+    event.preventDefault();
+    var title = $('.js-create-post-form-title').val();
+    var body = $('.js-create-post-form-body').val();
+    $(document).trigger("create:post", [{title: title, body: body}]);
   });
 
 
@@ -21,18 +23,11 @@ event.preventDefault();
   Post.fetch();
 });
 
-$(document).on('create:post', function() {
-
-  var title = $('.js-create-post-form-title').val();
-
-  var body = $('.js-create-post-form-body').val();
-
+// data/synchronization
+$(document).on('create:post', function(event, postData) {
   $.ajax({
     url: "http://tiny-lasagna-server.herokuapp.com/collections/posts",
     type: 'POST',
-    data: {
-      title: title,
-      body: body
-    }
+    data: postData
   });
 });
